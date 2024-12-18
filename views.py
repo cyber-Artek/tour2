@@ -27,6 +27,10 @@ def create_tour(name: str = Form(), city: str = Form(), days: int = Form(), pric
     db.refresh(tour)
     return {'id': 'tour.id'}
 
+@app.get('/create-tour', response_class=HTMLResponse)
+def create_tour_form(request: Request):
+    return templates.TemplateResponse('create_tour.html', {"request": request})
+
 
 @app.get('/register', response_class=HTMLResponse)
 def register_form(request: Request):

@@ -1,10 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block title %}Create Tour{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Add New Tour</h1>
+    <div class="modal-body">
+        <form id="createTourForm">
+            <div class="mb-3">
+                <label for="tourName" class="form-label">Name</label>
+                <input type="text" class="form-control" id="tourName" name="name" placeholder="Enter tour name" required>
+            </div>
+            <div class="mb-3">
+                <label for="tourCity" class="form-label">City</label>
+                <input type="text" class="form-control" id="tourCity" name="city" placeholder="Enter city" required>
+            </div>
+            <div class="mb-3">
+                <label for="tourDays" class="form-label">Days</label>
+                <input type="number" class="form-control" id="tourDays" name="days" placeholder="Enter number of days" required>
+            </div>
+            <div class="mb-3">
+                <label for="tourPrice" class="form-label">Price</label>
+                <input type="number" class="form-control" id="tourPrice" name="price" placeholder="Enter price" required>
+            </div>
+            <div class="mb-3">
+                <label for="tourDate" class="form-label">Date</label>
+                <input type="date" class="form-control" id="tourDate" name="date" required>
+            </div>
+            <button type="submit" class="btn btn-primary" id="saveTour">Save Tour</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/create-tour.js"></script>
+{% endblock %}

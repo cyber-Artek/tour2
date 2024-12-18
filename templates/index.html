@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<button type="button" class="btn btn-lg btn-primary"   data-bs-toggle="modal" data-bs-target="#tourModal">Add Tour</button>
+
 
 
 
@@ -33,30 +33,7 @@
 
 
 
-{% block modals %}
 
-<div class="modal fade" id="tourModal" tabindex="-1" aria-labelledby="tourModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="tourModalLabel">Modal title</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <input type="text" id="tourName" placeholder="name">
-            <input type="text" id="tourCity" placeholder="city">
-            <input type="number" id="tourDays" placeholder="days">
-            <input type="number" id="tourPrice" placeholder="price">
-            <input type="date" id="tourDate" placeholder="date">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button></div>
-          <button type="button" class="btn btn-primary" id="saveTour">Save changes</button>
-      </div>
-    </div>
-</div>
-
-{% endblock %}
 
 
 {% block scripts %}
