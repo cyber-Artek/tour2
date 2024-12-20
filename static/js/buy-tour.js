@@ -13,8 +13,8 @@ $('#buyTourForm').submit(function (e) {
         success: function (response) {
             if (response.status === 'success') {
                 alert(response.message);
-                // Додатково можна переадресувати користувача на іншу сторінку:
-                // window.location.href = '/';
+                // Редирект на головну сторінку після успішної покупки
+                window.location.href = '/';
             } else {
                 alert(response.message);
             }

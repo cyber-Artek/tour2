@@ -67,7 +67,7 @@ def success(request: Request):
     return templates.TemplateResponse('success.html', {"request": request})
 
 
-@app.post('/buy-tour', response_class=HTMLResponse)
+@app.post('/buy-tour', response_class=RedirectResponse)
 def buy_tour(
         tour_id: int = Form(...),
         db: Session = Depends(get_db)
@@ -75,12 +75,13 @@ def buy_tour(
     # Знаходимо тур у базі даних
     tour = db.query(Tour).filter(Tour.id == tour_id).first()
     if not tour:
-        return {'status': 'error', 'message': 'Tour not found'}
+        return RedirectResponse(url="/", status_code=303)
 
     # Логіка покупки (наприклад, збереження даних про покупку)
-    # Додайте обробку: запис покупця в базу, тощо, якщо це потрібно.
+    # Ви можете додати тут запис про покупку в базу даних.
 
-    return {'status': 'success', 'message': f'Tour "{tour.name}" purchased successfully!'}
+    # Повертаємо на головну сторінку після успішної покупки
+    return RedirectResponse(url="/", status_code=303)
 
 
 @app.get('/buy-tour', response_class=HTMLResponse)
