@@ -1,44 +1,39 @@
 {% extends 'base.html' %}
 
-
 {% block content %}
-
-
-
-
-
-<div class="card" style="width: 18rem;" id="tours">
-  {% for t in tours %}
-  <div class="card-body">
-    <div class="card-title">
-    </div>
-    <div class="card-text" id="tourCard{{ t.id }}">
-                <ul id="tour{{ t.id }}">
-                            <h5>{{ t.name }}</h5>
-                            <li>{{ t.city }}</li>
-                            <li>{{ t.days }}</li>
-                            <li>{{ t.price }}$</li>
-                            <li>{{ t.date }}</li>
-                </ul>
-
-    </div>
-  </div>
-    {% endfor %}
+<div class="container mt-5">
+    <h1>Available Tours</h1>
+    <table id="toursTable" class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>City</th>
+                <th>Days</th>
+                <th>Price ($)</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in tours %}
+            <tr>
+                <td>{{ t.name }}</td>
+                <td>{{ t.city }}</td>
+                <td>{{ t.days }}</td>
+                <td>{{ t.price }}</td>
+                <td>{{ t.date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
-
-
-
-
 {% endblock %}
 
-
-
-
-
-
 {% block scripts %}
-
-  <script src="/static/js/create-tour.js"></script>
-
-
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#toursTable').DataTable();
+    });
+</script>
 {% endblock %}

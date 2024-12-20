@@ -19,13 +19,20 @@ def home(request: Request, db: Session = Depends(get_db)):  # параметр �
 
 
 @app.post('/create-tour')
-def create_tour(name: str = Form(), city: str = Form(), days: int = Form(), price: int = Form(), date: str = Form(), db:Session = Depends(get_db)):  # параметр щоб дістати щось з бд
-    date = datetime.datetime.strptime(date, '%Y-%m-%d', )
+def create_tour(
+    name: str = Form(),
+    city: str = Form(),
+    days: int = Form(),
+    price: int = Form(),
+    date: str = Form(),
+    db: Session = Depends(get_db)
+):
+    date = datetime.datetime.strptime(date, '%Y-%m-%d')
     tour = Tour(name=name, city=city, days=days, price=price, date=date)
     db.add(tour)
     db.commit()
     db.refresh(tour)
-    return {'id': 'tour.id'}
+    return {'id': tour.id, 'name': tour.name, 'city': tour.city, 'days': tour.days, 'price': tour.price, 'date': tour.date.strftime('%Y-%m-%d')}
 
 @app.get('/create-tour', response_class=HTMLResponse)
 def create_tour_form(request: Request):

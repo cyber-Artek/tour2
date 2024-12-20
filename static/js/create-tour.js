@@ -1,39 +1,40 @@
-$('#saveTour').click(function(){
-    $.ajax('/create-tour', {
-        'type': 'POST',
-        'async': true,
-        'dataType': 'json',
-        'data': {
-            'name': $('#tourName').val(),
-            'city': $('#tourCity').val(),
-            'days': $('#tourDays').val(),
-            'price': $('#tourPrice').val(),
-            'date': $('#tourDate').val()
-                },
+$('#saveTour').click(function (e) {
+    e.preventDefault(); // Зупиняє стандартну поведінку кнопки
 
-        'success': function(response){
-            document.getElementById(`tours`).innerHTML +=
-                `
-                <div class="card-body">
-                    <div class="card-title">
-                    </div>
-                    <div class="card-text" id="tourCard${response.id}">
-                        <ul id="tour${response.id}">
-                            <h5>${$('#tourName').val()}</h5>
-                            <li>${$('#tourCity').val()}</li>
-                            <li>${$('#tourDays').val()}</li>
-                            <li>${$('#tourPrice').val()}</li>
-                            <li>${$('#tourDate').val()}</li>
-                        </ul>
-                    </div>
-                </div>
-                `;
+    $.ajax('/create-tour', {
+        type: 'POST',
+        async: true,
+        dataType: 'json',
+        data: {
+            name: $('#tourName').val(),
+            city: $('#tourCity').val(),
+            days: $('#tourDays').val(),
+            price: $('#tourPrice').val(),
+            date: $('#tourDate').val(),
+        },
+        success: function (response) {
+            // Додаємо новий тур у таблицю
+            $('#toursTable tbody').append(`
+                <tr>
+                    <td>${$('#tourName').val()}</td>
+                    <td>${$('#tourCity').val()}</td>
+                    <td>${$('#tourDays').val()}</td>
+                    <td>${$('#tourPrice').val()}</td>
+                    <td>${$('#tourDate').val()}</td>
+                </tr>
+            `);
+
+            // Очищення форми після додавання
             $('#tourName').val('');
             $('#tourCity').val('');
             $('#tourDays').val('');
             $('#tourPrice').val('');
             $('#tourDate').val('');
-        }
+
+            alert('Tour created successfully!');
+        },
+        error: function () {
+            alert('Failed to create tour. Please try again.');
+        },
     });
 });
-
