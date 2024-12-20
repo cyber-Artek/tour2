@@ -65,3 +65,25 @@ def register(
 @app.get('/success', response_class=HTMLResponse)
 def success(request: Request):
     return templates.TemplateResponse('success.html', {"request": request})
+
+
+@app.post('/buy-tour', response_class=HTMLResponse)
+def buy_tour(
+        tour_id: int = Form(...),
+        db: Session = Depends(get_db)
+):
+    # Знаходимо тур у базі даних
+    tour = db.query(Tour).filter(Tour.id == tour_id).first()
+    if not tour:
+        return {'status': 'error', 'message': 'Tour not found'}
+
+    # Логіка покупки (наприклад, збереження даних про покупку)
+    # Додайте обробку: запис покупця в базу, тощо, якщо це потрібно.
+
+    return {'status': 'success', 'message': f'Tour "{tour.name}" purchased successfully!'}
+
+
+@app.get('/buy-tour', response_class=HTMLResponse)
+def buy_tour_form(request: Request, db: Session = Depends(get_db)):
+    tours = db.query(Tour).all()
+    return templates.TemplateResponse('buy_tour.html', {'request': request, 'tours': tours})

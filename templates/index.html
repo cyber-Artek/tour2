@@ -13,17 +13,22 @@
                 <th>Date</th>
             </tr>
         </thead>
-        <tbody>
-            {% for t in tours %}
-            <tr>
-                <td>{{ t.name }}</td>
-                <td>{{ t.city }}</td>
-                <td>{{ t.days }}</td>
-                <td>{{ t.price }}</td>
-                <td>{{ t.date }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
+            <tbody>
+                {% for t in tours %}
+                <tr>
+                    <td>{{ t.name }}</td>
+                    <td>{{ t.city }}</td>
+                    <td>{{ t.days }}</td>
+                    <td>{{ t.price }}</td>
+                    <td>{{ t.date }}</td>
+                    <td>
+                        <form action="/buy-tour" method="get" style="display:inline;">
+                            <button class="btn btn-primary btn-sm">Buy</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
     </table>
 </div>
 {% endblock %}
