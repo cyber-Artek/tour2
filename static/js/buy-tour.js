@@ -10,17 +10,13 @@ $('#buyTourForm').submit(function (e) {
         data: {
             tour_id: selectedTourId
         },
-        success: function (response) {
-            if (response.status === 'success') {
-                alert(response.message);
-                window.location.href = '/'; // Перенаправляємо на головну сторінку
-            } else {
-                alert(response.message); // Виводимо повідомлення про помилку
+            success: function (response) {
+                alert(response.message); // Залишаємо для JSON
+                // Якщо сервер повертає HTML, використовуємо DOMParser або простий перехід на сторінку:
+                window.location.href = '/success';
+            },
+            error: function (xhr, status, error) {
+                alert('An error occurred. Please try again.');
             }
-        },
-        error: function (xhr, status, error) {
-            console.error('Error:', xhr.responseText); // Виводимо деталі помилки у консоль
-            alert('An error occurred. Please try again.');
-        }
     });
 });

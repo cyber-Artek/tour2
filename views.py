@@ -6,6 +6,8 @@ from config import app, templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi import Request, Depends, Form
 
+from fastapi.responses import JSONResponse
+
 from sqlalchemy.orm import Session
 
 from db import get_db, Tour, User
@@ -69,7 +71,10 @@ def success(request: Request):
     return templates.TemplateResponse('success.html', {"request": request})
 
 
-@app.post('/buy-tour', response_class=HTMLResponse)
+
+
+
+@app.post('/buy-tour', response_class=JSONResponse)
 def buy_tour(
         tour_id: int = Form(...),
         db: Session = Depends(get_db)
@@ -90,6 +95,8 @@ def buy_tour(
     except Exception as e:
         logging.error('Error during purchase: %s', str(e))
         return {'status': 'error', 'message': 'Server error'}
+
+
 
 
 @app.get('/buy-tour', response_class=HTMLResponse)
