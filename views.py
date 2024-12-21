@@ -8,6 +8,7 @@ from fastapi import Request, Depends, Form
 
 from fastapi.responses import JSONResponse
 
+
 from sqlalchemy.orm import Session
 
 from db import get_db, Tour, User
