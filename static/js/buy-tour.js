@@ -13,7 +13,7 @@ $('#buyTourForm').submit(function (e) {
             success: function (response) {
                 alert(response.message); // Залишаємо для JSON
                 // Якщо сервер повертає HTML, використовуємо DOMParser або простий перехід на сторінку:
-                window.location.href = '/success';
+                window.location.href = '/';
             },
             error: function (xhr, status, error) {
                 alert('An error occurred. Please try again.');
