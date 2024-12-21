@@ -1,5 +1,7 @@
 import datetime
+import logging
 
+logging.basicConfig(level=logging.INFO)
 from config import app, templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi import Request, Depends, Form
@@ -67,21 +69,27 @@ def success(request: Request):
     return templates.TemplateResponse('success.html', {"request": request})
 
 
-@app.post('/buy-tour', response_class=RedirectResponse)
+@app.post('/buy-tour', response_class=HTMLResponse)
 def buy_tour(
         tour_id: int = Form(...),
         db: Session = Depends(get_db)
 ):
-    # Знаходимо тур у базі даних
-    tour = db.query(Tour).filter(Tour.id == tour_id).first()
-    if not tour:
-        return RedirectResponse(url="/", status_code=303)
+    try:
+        # Знаходимо тур
+        tour = db.query(Tour).filter(Tour.id == tour_id).first()
+        if not tour:
+            logging.error('Tour not found: ID %s', tour_id)
+            return {'status': 'error', 'message': 'Tour not found'}
 
-    # Логіка покупки (наприклад, збереження даних про покупку)
-    # Ви можете додати тут запис про покупку в базу даних.
+        # Додаткова логіка покупки
 
-    # Повертаємо на головну сторінку після успішної покупки
-    return RedirectResponse(url="/", status_code=303)
+        # Успішна покупка
+        logging.info('Tour purchased: ID %s', tour_id)
+        return {'status': 'success', 'message': 'Tour purchased successfully!'}
+
+    except Exception as e:
+        logging.error('Error during purchase: %s', str(e))
+        return {'status': 'error', 'message': 'Server error'}
 
 
 @app.get('/buy-tour', response_class=HTMLResponse)

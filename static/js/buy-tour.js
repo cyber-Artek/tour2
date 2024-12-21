@@ -13,13 +13,13 @@ $('#buyTourForm').submit(function (e) {
         success: function (response) {
             if (response.status === 'success') {
                 alert(response.message);
-                // Редирект на головну сторінку після успішної покупки
-                window.location.href = '/';
+                window.location.href = '/'; // Перенаправляємо на головну сторінку
             } else {
-                alert(response.message);
+                alert(response.message); // Виводимо повідомлення про помилку
             }
         },
-        error: function () {
+        error: function (xhr, status, error) {
+            console.error('Error:', xhr.responseText); // Виводимо деталі помилки у консоль
             alert('An error occurred. Please try again.');
         }
     });
