@@ -13,6 +13,9 @@ from sqlalchemy.orm import Session
 
 from db import get_db, Tour, User
 
+
+
+
 # дані якого типу ми передаємо, бо серевер вважає що всі дані ми повертаємо у форматі json
 
 
@@ -104,3 +107,7 @@ def buy_tour(
 def buy_tour_form(request: Request, db: Session = Depends(get_db)):
     tours = db.query(Tour).all()
     return templates.TemplateResponse('buy_tour.html', {'request': request, 'tours': tours})
+
+
+
+
