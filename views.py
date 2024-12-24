@@ -14,7 +14,10 @@ from sqlalchemy.orm import Session
 from db import get_db, Tour, User
 
 
+from fastapi import HTTPException
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 # дані якого типу ми передаємо, бо серевер вважає що всі дані ми повертаємо у форматі json
 
@@ -158,3 +161,49 @@ def delete_tour(tour_id: int = Form(...), db: Session = Depends(get_db)):
 
     except Exception as e:
         return {'status': 'error', 'message': str(e)}
+
+
+@app.get('/login', response_class=HTMLResponse)
+def login_form(request: Request):
+    return templates.TemplateResponse('login.html', {"request": request})
+
+
+@app.post('/login', response_class=HTMLResponse)
+def login(
+    request: Request,
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
+):
+    user = db.query(User).filter(User.username == form_data.username).first()
+
+    if not user or user.password != form_data.password:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    # Логіка для входу (наприклад, створення сесії)
+    response = RedirectResponse(url="/", status_code=303)
+    response.set_cookie(key="user_id", value=user.id)
+    return response
+
+
+@app.get('/logout', response_class=RedirectResponse)
+def logout():
+    response = RedirectResponse(url="/", status_code=303)
+    response.delete_cookie(key="user_id")
+    return response
+
+
+def get_current_user(request: Request, db: Session = Depends(get_db)):
+    user_id = request.cookies.get("user_id")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    return user
+
+
+@app.get('/profile', response_class=HTMLResponse)
+def profile(request: Request, user: User = Depends(get_current_user)):
+    return templates.TemplateResponse("profile.html", {"request": request, "user": user})
