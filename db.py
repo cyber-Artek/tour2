@@ -34,6 +34,7 @@ class ModelMetaDatesMixin(Base):    # розширити функціонал і
 
 
 
+
 class Tour(Base):
     __tablename__ = 'tour'          # як буде називатись табл в SQl
 

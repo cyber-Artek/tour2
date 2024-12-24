@@ -29,6 +29,8 @@ def home(request: Request, db: Session = Depends(get_db)):  # параметр �
     # сервер  повертає значення у форматі json
 
 
+
+
 @app.post('/create-tour')
 def create_tour(
     name: str = Form(),
