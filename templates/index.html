@@ -26,17 +26,57 @@
                 <form action="/buy-tour" method="get" style="display:inline;">
                     <button class="btn btn-primary btn-sm">Buy</button>
                 </form>
+                <button class="btn btn-warning btn-sm edit-tour-btn" data-id="{{ t.id }}" data-name="{{ t.name }}" data-city="{{ t.city }}" data-days="{{ t.days }}" data-price="{{ t.price }}" data-date="{{ t.date }}">Edit</button>
+                <button class="btn btn-danger btn-sm delete-tour-btn" data-id="{{ t.id }}">Delete</button>
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 </div>
+<div class="modal fade" id="editTourModal" tabindex="-1" aria-labelledby="editTourModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editTourModalLabel">Edit Tour</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editTourForm">
+                    <input type="hidden" id="editTourId">
+                    <div class="mb-3">
+                        <label for="editTourName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="editTourName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editTourCity" class="form-label">City</label>
+                        <input type="text" class="form-control" id="editTourCity" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editTourDays" class="form-label">Days</label>
+                        <input type="number" class="form-control" id="editTourDays" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editTourPrice" class="form-label">Price</label>
+                        <input type="number" class="form-control" id="editTourPrice" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editTourDate" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="editTourDate" required>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="saveEditTour">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="/static/js/edit-tour.js"></script>
+<script src="/static/js/delete-tour.js"></script>
 <script>
         $(document).ready(function() {
             $('#toursTable').DataTable();

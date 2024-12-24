@@ -111,3 +111,50 @@ def buy_tour_form(request: Request, db: Session = Depends(get_db)):
 
 
 
+@app.post('/edit-tour', response_class=JSONResponse)
+def edit_tour(
+    tour_id: int = Form(...),
+    name: str = Form(...),
+    city: str = Form(...),
+    days: int = Form(...),
+    price: int = Form(...),
+    date: str = Form(...),
+    db: Session = Depends(get_db)
+):
+    try:
+        # Знаходимо тур
+        tour = db.query(Tour).filter(Tour.id == tour_id).first()
+        if not tour:
+            return {'status': 'error', 'message': 'Tour not found'}
+
+        # Оновлюємо дані туру
+        tour.name = name
+        tour.city = city
+        tour.days = days
+        tour.price = price
+        tour.date = datetime.datetime.strptime(date, '%Y-%m-%d')
+        db.commit()
+        db.refresh(tour)
+
+        return {'status': 'success', 'message': 'Tour updated successfully!'}
+
+    except Exception as e:
+        return {'status': 'error', 'message': str(e)}
+
+
+@app.post('/delete-tour', response_class=JSONResponse)
+def delete_tour(tour_id: int = Form(...), db: Session = Depends(get_db)):
+    try:
+        # Знаходимо тур
+        tour = db.query(Tour).filter(Tour.id == tour_id).first()
+        if not tour:
+            return {'status': 'error', 'message': 'Tour not found'}
+
+        # Видаляємо тур
+        db.delete(tour)
+        db.commit()
+
+        return {'status': 'success', 'message': 'Tour deleted successfully!'}
+
+    except Exception as e:
+        return {'status': 'error', 'message': str(e)}
