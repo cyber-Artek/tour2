@@ -54,3 +54,11 @@ class User(Base):
     username = Column(String(50), unique=True, nullable=False)
     email = Column(String(50), nullable=False)
     password = db.Column(db.String(60), nullable=False)
+
+
+class Admin(Base):
+    __tablename__ = 'admin'
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'), unique=True, nullable=False)
+    user = relationship("User", backref="admin")

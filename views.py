@@ -6,12 +6,16 @@ from config import app, templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi import Request, Depends, Form
 
+from fastapi import Depends, HTTPException
+
+
+
 from fastapi.responses import JSONResponse
 
 
 from sqlalchemy.orm import Session
 
-from db import get_db, Tour, User
+from db import get_db, Tour, User, Admin
 
 
 from fastapi import HTTPException
@@ -28,8 +32,24 @@ def home(request: Request, db: Session = Depends(get_db)):  # параметр �
     return templates.TemplateResponse('index.html', {'tours': tours, 'request': request})
     # сервер  повертає значення у форматі json
 
+def get_current_user(request: Request, db: Session = Depends(get_db)):
+    user_id = request.cookies.get("user_id")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    return user
 
 
+
+def get_current_admin(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    admin = db.query(Admin).filter(Admin.user_id == user.id).first()
+    if not admin:
+        raise HTTPException(status_code=403, detail="Access denied. Admins only.")
+    return admin
 
 @app.post('/create-tour')
 def create_tour(
@@ -38,7 +58,8 @@ def create_tour(
     days: int = Form(),
     price: int = Form(),
     date: str = Form(),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    admin: Admin = Depends(get_current_admin)
 ):
     date = datetime.datetime.strptime(date, '%Y-%m-%d')
     tour = Tour(name=name, city=city, days=days, price=price, date=date)
@@ -124,7 +145,9 @@ def edit_tour(
     days: int = Form(...),
     price: int = Form(...),
     date: str = Form(...),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    admin: Admin = Depends(get_current_admin)
+
 ):
     try:
         # Знаходимо тур
@@ -148,7 +171,9 @@ def edit_tour(
 
 
 @app.post('/delete-tour', response_class=JSONResponse)
-def delete_tour(tour_id: int = Form(...), db: Session = Depends(get_db)):
+def delete_tour(tour_id: int = Form(...), db: Session = Depends(get_db),
+                admin: Admin = Depends(get_current_admin)
+                ):
     try:
         # Знаходимо тур
         tour = db.query(Tour).filter(Tour.id == tour_id).first()
@@ -194,18 +219,27 @@ def logout():
     return response
 
 
-def get_current_user(request: Request, db: Session = Depends(get_db)):
-    user_id = request.cookies.get("user_id")
-    if not user_id:
-        raise HTTPException(status_code=401, detail="Not authenticated")
-
-    user = db.query(User).filter(User.id == user_id).first()
-    if not user:
-        raise HTTPException(status_code=401, detail="Not authenticated")
-
-    return user
-
 
 @app.get('/profile', response_class=HTMLResponse)
 def profile(request: Request, user: User = Depends(get_current_user)):
     return templates.TemplateResponse("profile.html", {"request": request, "user": user})
+
+
+@app.post('/make-admin', response_class=JSONResponse)
+def make_admin(user_id: int = Form(...), db: Session = Depends(get_db)):
+    # Перевіряємо, чи існує користувач
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        return {'status': 'error', 'message': 'User not found'}
+
+    # Перевіряємо, чи користувач вже адміністратор
+    existing_admin = db.query(Admin).filter(Admin.user_id == user_id).first()
+    if existing_admin:
+        return {'status': 'error', 'message': 'User is already an admin'}
+
+    # Додаємо адміністратора
+    admin = Admin(user_id=user_id)
+    db.add(admin)
+    db.commit()
+
+    return {'status': 'success', 'message': f'User {user.username} is now an admin'}
